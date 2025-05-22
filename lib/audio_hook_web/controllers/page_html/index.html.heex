@@ -15,22 +15,24 @@
       const audio = document.getElementById("my-audio");
 
       btn.addEventListener("click", () => {
-        audio.play();
-        fetch("/audio-callback", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-Token": document
-              .querySelector("meta[name='csrf-token']")
-              ?.getAttribute("content"),
-          },
-          body: JSON.stringify({
-            url: audio.src,
-          }),
-        }).then(res => res.json()).then(data => {
-          console.log("Callback received by server:", data);
-        });
-      });
+  // audio.play();  // Commented out to disable playback
+
+  fetch("/audio-callback", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": document
+        .querySelector("meta[name='csrf-token']")
+        ?.getAttribute("content"),
+    },
+    body: JSON.stringify({
+      url: audio.src,
+    }),
+  }).then(res => res.json()).then(data => {
+    console.log("Callback received by server:", data);
+  });
+});
+
     </script>
   </body>
 </html>

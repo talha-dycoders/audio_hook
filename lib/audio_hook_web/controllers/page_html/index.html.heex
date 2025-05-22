@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Audio Hook Test</title>
+    <meta name="csrf-token" content={get_csrf_token()}/>
+  </head>
+  <body>
+    <h1>Play Audio</h1>
+    <button id="audio-btn">Play</button>
+    <audio id="my-audio" src="https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"></audio>
+
+    <script>
+      const btn = document.getElementById("audio-btn");
+      const audio = document.getElementById("my-audio");
+
+      btn.addEventListener("click", () => {
+        audio.play();
+        fetch("/audio-callback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": document
+              .querySelector("meta[name='csrf-token']")
+              ?.getAttribute("content"),
+          },
+          body: JSON.stringify({
+            url: audio.src,
+          }),
+        }).then(res => res.json()).then(data => {
+          console.log("Callback received by server:", data);
+        });
+      });
+    </script>
+  </body>
+</html>

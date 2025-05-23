@@ -17,9 +17,9 @@ defmodule AudioHookWeb.Router do
   scope "/", AudioHookWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    post "/audio-callback", PageController, :callback
+    live "/", PageLive
   end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", AudioHookWeb do

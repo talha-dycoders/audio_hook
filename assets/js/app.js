@@ -22,9 +22,33 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+
+let hooks = {
+  AudioClick: {
+    mounted() {
+      this.el.querySelectorAll('.audio-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const audioUrl = e.target.dataset.audioUrl;
+
+          try {
+            // For mobile app or Flutter WebView
+            Print.postMessage(audioUrl);
+          } catch (error) {
+            // Just log it to console if not in mobile app
+            console.log("Audio URL:", audioUrl);
+          }
+        });
+      });
+    }
+  }
+}
+
+
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
+  hooks: hooks,
   params: {_csrf_token: csrfToken}
 })
 
@@ -35,6 +59,7 @@ window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
+
 
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()

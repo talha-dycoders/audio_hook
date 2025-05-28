@@ -23,18 +23,40 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 
+// let hooks = {
+//   AudioClick: {
+//     mounted() {
+//       this.el.querySelectorAll('.audio-button').forEach(button => {
+//         button.addEventListener('click', (e) => {
+//           const audioUrl = e.target.dataset.audioUrl;
+
+//           try {
+//             // For mobile app or Flutter WebView
+//             Print.postMessage(audioUrl);
+//           } catch (error) {
+//             // Just log it to console if not in mobile app
+//             console.log("Audio URL:", audioUrl);
+//           }
+//         });
+//       });
+//     }
+//   }
+// }
+
 let hooks = {
   AudioClick: {
     mounted() {
       this.el.querySelectorAll('.audio-button').forEach(button => {
+        if (button.dataset.listenerAdded) return;
+
+        button.dataset.listenerAdded = "true";
+
         button.addEventListener('click', (e) => {
           const audioUrl = e.target.dataset.audioUrl;
 
           try {
-            // For mobile app or Flutter WebView
             Print.postMessage(audioUrl);
           } catch (error) {
-            // Just log it to console if not in mobile app
             console.log("Audio URL:", audioUrl);
           }
         });
@@ -42,6 +64,7 @@ let hooks = {
     }
   }
 }
+
 
 
 
